@@ -47,35 +47,70 @@ router.post('/signup', (req, res) => {
 });
 
 // SigIN
-router.post('/signin', (req, res) => {
+// router.post('/signin', (req, res) => {
+//   User.findOne({
+//     username: req.body.username
+//   }, function (err, user) {
+//     if (!user) {
+//       res.status(401).send({
+//         success: false,
+//         msg: 'Authentification failed. User Not found'
+//       });
+//     } else {
+//       // Check If password match :
+//       user.comparePassword(req.body.password, function (err, isMatch) {
+//         if (isMatch && !err) {
+//           var token = jwt.sign(user.toJson(), config.secret);
+//           var token = jwt.sign(user.toJSON(), config.secret);
+//           res.json({
+//             success: true,
+//             token: 'JWT' + token
+//           });
+//         } else {
+//           res.status(401).send({
+//             success: false,
+//             msg: 'Authentification failed. Wrong password'
+//           });
+//         }
+//       })
+
+//     }
+//   })
+// });
+
+router.post('/signin', function (req, res) {
   User.findOne({
     username: req.body.username
   }, function (err, user) {
+    if (err) throw err;
+
     if (!user) {
       res.status(401).send({
         success: false,
-        msg: 'Authentification failed. User Not found'
+        msg: 'Authentication failed. User not found.'
       });
     } else {
-      // Check If password match :
+      // check if password matches
       user.comparePassword(req.body.password, function (err, isMatch) {
         if (isMatch && !err) {
-          var token = jwt.sign(user.toJson(), config.secret);
+          // if user is found and password is right create a token
+          var token = jwt.sign(user.toJSON(), config.secret);
+          // return the information including token as JSON
           res.json({
             success: true,
-            token: 'JWT' + token
+            token: 'JWT ' + token
           });
         } else {
           res.status(401).send({
             success: false,
-            msg: 'Authentification failed. Wrong password'
+            msg: 'Authentication failed. Wrong password.'
           });
         }
-      })
-
+      });
     }
-  })
+  });
 });
+
 
 
 // Add a book for authorized user

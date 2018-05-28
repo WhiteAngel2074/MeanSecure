@@ -21,7 +21,9 @@ app.use(bodyParser.urlencoded({
   'extended': 'false'
 }));
 app.use(express.static(path.join(__dirname, 'dist')));
-app.use('/', express.static(path.join(__dirname, 'dist')));
+// app.use('/', express.static(path.join(__dirname, 'dist')));
+app.use('/books', express.static(path.join(__dirname, 'dist')));
+
 app.use('/api', api);
 app.use('/api', api);
 
